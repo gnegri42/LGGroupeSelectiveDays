@@ -3,6 +3,9 @@ const fs = require('fs');
 const cheerio = require('cheerio');
 const nodemailer = require('nodemailer');
 
+
+// Function to send emails from sendgrip
+// The mail send the city name when a vehicle is sold
 function sendMail(vehicles) {
   const sgMail = require('@sendgrid/mail')
   sgMail.setApiKey(process.env.SENDGRID_API_KEY)
@@ -75,6 +78,7 @@ function sendMail(vehicles) {
 //   // 'https://lggroupe.com/vehicule/?vehicule=335824000244', False vehicle for example
 // ]
 
+// List of every links to check, as well as the city it is sold to
 const vehiclesObject = [
   {
     url : 'https://lggroupe.com/vehicule/?vehicule=327882970244',
@@ -134,10 +138,12 @@ const vehiclesObject = [
   }
 ]
 
+// Sleep function to be able to loop the async function
 const sleep = ms => {
   return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+// Create an html document with the html page from the url
 async function downloadHtml(uri) {
   // the output filename
   const filename = 'result.html';
@@ -156,6 +162,7 @@ async function downloadHtml(uri) {
   await fs.promises.writeFile(filename, results);
 }
 
+// Parse the html page to search if the vehicle details are still there or not (which would mean the vehicle is sold)
 async function parsePage() {
   // console.log('Parsing box score HTML...');
   // the input filename
@@ -174,7 +181,9 @@ async function parsePage() {
 }
 
 async function main() {
-  var offlineVehicles = [];
+  var offlineVehicles = []; // to stock the sold vehicles
+
+  // Looping through every vehicle to check if they are sold or not
   for (let index = 0; index < vehiclesObject.length; index++) {
     const uri = vehiclesObject[index].url;
     await downloadHtml(uri);
@@ -184,6 +193,8 @@ async function main() {
     if (!vehicleState)
       offlineVehicles.push(vehiclesObject[index].city);
   }
+
+  // Send mail if we have sold vehicles
   if (offlineVehicles.length != 0)
     sendMail(offlineVehicles);
   console.log('Done!');
