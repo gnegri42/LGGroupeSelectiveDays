@@ -27,7 +27,7 @@ function sendMail(vehicles) {
 }
 
 
-// SENDING MAILS WITH NODEMAILER AND MAILTRAP AS TEST
+// // SENDING MAILS WITH NODEMAILER AND MAILTRAP AS TEST
 // function sendMail(vehicles) {
 //   var transport = nodemailer.createTransport({
 //     host: "smtp.mailtrap.io",
@@ -56,23 +56,82 @@ function sendMail(vehicles) {
 //   })
 // }
 
-const urls = [
-  'https://lggroupe.com/vehicule/?vehicule=327882970244',
-  'https://lggroupe.com/vehicule/?vehicule=355188040244',
-  'https://lggroupe.com/vehicule/?vehicule=357601410244',
-  'https://lggroupe.com/vehicule/?vehicule=349711360244',
-  'https://lggroupe.com/vehicule/?vehicule=350040000244',
-  'https://lggroupe.com/vehicule/?vehicule=353880730244',
-  'https://lggroupe.com/vehicule/?vehicule=342737090244',
-  'https://lggroupe.com/vehicule/?vehicule=352523590244',
-  'https://lggroupe.com/vehicule/?vehicule=344089540244',
-  'https://lggroupe.com/vehicule/?vehicule=357601020244',
-  'https://lggroupe.com/vehicule/?vehicule=357601970244',
-  'https://lggroupe.com/vehicule/?vehicule=355651360244',
-  'https://lggroupe.com/vehicule/?vehicule=357602750244',
-  'https://lggroupe.com/vehicule/?vehicule=357602250244',
-  // 'https://lggroupe.com/vehicule/?vehicule=322672930244',
-  'https://lggroupe.com/vehicule/?vehicule=335824000244',
+// const urls = [
+//   'https://lggroupe.com/vehicule/?vehicule=327882970244',
+//   'https://lggroupe.com/vehicule/?vehicule=355188040244',
+//   'https://lggroupe.com/vehicule/?vehicule=357601410244',
+//   'https://lggroupe.com/vehicule/?vehicule=349711360244',
+//   'https://lggroupe.com/vehicule/?vehicule=350040000244',
+//   'https://lggroupe.com/vehicule/?vehicule=353880730244',
+//   'https://lggroupe.com/vehicule/?vehicule=342737090244',
+//   'https://lggroupe.com/vehicule/?vehicule=352523590244',
+//   'https://lggroupe.com/vehicule/?vehicule=344089540244',
+//   'https://lggroupe.com/vehicule/?vehicule=357601020244',
+//   'https://lggroupe.com/vehicule/?vehicule=357601970244',
+//   'https://lggroupe.com/vehicule/?vehicule=355651360244',
+//   'https://lggroupe.com/vehicule/?vehicule=357602750244',
+//   'https://lggroupe.com/vehicule/?vehicule=357602250244',
+//   // 'https://lggroupe.com/vehicule/?vehicule=322672930244', False vehicle for example
+//   // 'https://lggroupe.com/vehicule/?vehicule=335824000244', False vehicle for example
+// ]
+
+const vehiclesObject = [
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=327882970244',
+    city : 'Albi'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=355188040244',
+    city : 'Beziers'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=357601410244',
+    city : 'Brive'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=349711360244',
+    city : 'Carcassonne'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=350040000244',
+    city : 'Castres'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=353880730244',
+    city : 'Muret'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=342737090244',
+    city : 'Narbonne'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=352523590244',
+    city : 'Perpignan'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=344089540244',
+    city : 'Toulouse'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=357601020244',
+    city : 'Angouleme'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=357601970244',
+    city : 'Cognac'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=355651360244',
+    city : 'Limoges'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=357602750244',
+    city : 'Royan'
+  },
+  {
+    url : 'https://lggroupe.com/vehicule/?vehicule=357602250244',
+    city : 'Perigueux'
+  }
 ]
 
 const sleep = ms => {
@@ -116,14 +175,14 @@ async function parsePage() {
 
 async function main() {
   var offlineVehicles = [];
-  for (let index = 0; index < urls.length; index++) {
-    const uri = urls[index];
+  for (let index = 0; index < vehiclesObject.length; index++) {
+    const uri = vehiclesObject[index].url;
     await downloadHtml(uri);
     // console.log('Starting...');
     const vehicleState = await parsePage();
     console.log(vehicleState + " : " + uri);
     if (!vehicleState)
-      offlineVehicles.push(uri);
+      offlineVehicles.push(vehiclesObject[index].city);
   }
   if (offlineVehicles.length != 0)
     sendMail(offlineVehicles);
