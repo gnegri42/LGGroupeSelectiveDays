@@ -2,6 +2,8 @@ const rp = require('request-promise-native');
 const fs = require('fs');
 const cheerio = require('cheerio');
 const nodemailer = require('nodemailer');
+const cron = require('node-cron');
+
 
 
 // Function to send emails from sendgrip
@@ -200,4 +202,6 @@ async function main() {
   console.log('Done!');
 }
 
-main();
+// Setting up cron task to run the function every day at midnight
+// If test is needed, change the last two 0s to *, to launch the function every minute
+cron.schedule('0 0 0 * * *', main);
